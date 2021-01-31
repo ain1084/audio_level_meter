@@ -39,7 +39,7 @@
         <Source name="src/spdif_transmitter.v" type="Verilog" type_short="Verilog">
             <Options/>
         </Source>
-        <Source name="src/fork_valid_ready.v" type="Verilog" type_short="Verilog">
+        <Source name="src/dataflow_fork_valid_ready.v" type="Verilog" type_short="Verilog">
             <Options/>
         </Source>
         <Source name="audio_level_meter.lpf" type="Logic Preference" type_short="LPF">

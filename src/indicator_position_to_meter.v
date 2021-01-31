@@ -1,6 +1,6 @@
 `default_nettype none
 
-module indicator_position_to_meter #(parameter width = 32, peak_hold_count = 44100)(
+module indicator_position_to_meter #(parameter width = 32, peak_hold_count = 1000)(
     input wire reset,
     input wire clk,
     input wire i_valid,
@@ -11,16 +11,15 @@ module indicator_position_to_meter #(parameter width = 32, peak_hold_count = 441
     input wire o_ready,
     output wire [width-1:0] o_meter);
 
-    reg [4:0] left_peak_hold;
-    reg [$clog2(peak_hold_count+1)-1:0] left_peak_hold_sample_count;
-    reg [4:0] right_peak_hold;
-    reg [$clog2(peak_hold_count+1)-1:0] right_peak_hold_sample_count;
+    reg [$clog2(width)-1:0] peak_hold[1:0];
+    reg [$clog2(width)-1:0] max_position[1:0];
+    reg [$clog2(peak_hold_count+1)-1:0] peak_hold_sample_count[1:0];
 
     reg [$clog2(width)-1:0] cur_position;
     reg [$clog2(width)-1:0] cur_peak_hold;
 
-    reg [4:0] count;
-    reg [31:0] meter;
+    reg [$clog2(width)-1:0] count;
+    reg [width-1:0] meter;
 
     assign o_meter = meter;
 
@@ -28,34 +27,27 @@ module indicator_position_to_meter #(parameter width = 32, peak_hold_count = 441
         if (reset) begin
             i_ready <= 1'b1;
             o_valid <= 1'b0;
-            left_peak_hold <= 0;
-            right_peak_hold <= 0;
-            left_peak_hold_sample_count <= 0;
-            right_peak_hold_sample_count <= 0;
+            peak_hold[0] <= 0;
+            peak_hold[1] <= 0;
+			max_position[0] <= 0;
+			max_position[1] <= 0;
+            peak_hold_sample_count[0] <= 0;
+            peak_hold_sample_count[1] <= 0;
             cur_position <= 0;
             cur_peak_hold <= 0;
             meter <= 0;
             count <= 0;
         end else if (i_valid && i_ready) begin
-            if (i_is_left) begin
-                if (i_position >= left_peak_hold || left_peak_hold_sample_count == 0) begin
-                    left_peak_hold <= i_position;
-                    cur_peak_hold <= i_position;
-                    left_peak_hold_sample_count <= peak_hold_count;
-                end else begin
-                    left_peak_hold_sample_count <= left_peak_hold_sample_count - 1'b1;
-                    cur_peak_hold <= left_peak_hold;
-                end
-            end else begin
-                if (i_position >= right_peak_hold || right_peak_hold_sample_count == 0) begin
-                    right_peak_hold <= i_position;
-                    cur_peak_hold <= i_position;
-                    right_peak_hold_sample_count <= peak_hold_count;
-                end else begin
-                    right_peak_hold_sample_count <= right_peak_hold_sample_count - 1'b1;
-                    cur_peak_hold <= right_peak_hold;
-                end
-            end
+			if (i_position >= peak_hold[i_is_left] || peak_hold_sample_count[i_is_left] == 0) begin
+				peak_hold[i_is_left] <= i_position > max_position[i_is_left] ? i_position : max_position[i_is_left];
+				peak_hold_sample_count[i_is_left] <= peak_hold_count;
+				cur_peak_hold <= i_position;
+				max_position[i_is_left] <= i_position;
+			end else begin
+				peak_hold_sample_count[i_is_left] <= peak_hold_sample_count[i_is_left] - 1'b1;
+				cur_peak_hold <= peak_hold[i_is_left];
+				max_position[i_is_left] <= max_position[i_is_left] < i_position ? i_position : max_position[i_is_left];
+			end
             cur_position <= i_position;
             i_ready <= 1'b0;
         end else if (o_valid) begin
@@ -65,7 +57,7 @@ module indicator_position_to_meter #(parameter width = 32, peak_hold_count = 441
             end
         end else if (!i_ready) begin
             count <= count + 1'b1;
-            meter <= { count == cur_peak_hold || count <= cur_position, meter[31:1] };
+            meter <= { count == cur_peak_hold || count <= cur_position, meter[width-1:1] };
             if (&count) begin
                 o_valid <= 1'b1;
             end
