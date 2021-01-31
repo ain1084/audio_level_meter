@@ -15,7 +15,7 @@ module stp16cpc26 #(parameter width = 32, dynamic_drive_interval = 1)
     reg [$clog2(width)-1:0] count;
     reg [width-1:0] current_data;
     reg [width-1:0] loaded_data;
-    reg [$clog2(dynamic_drive_interval)-1:0] dynamic_drive_count;
+    reg [dynamic_drive_interval-1:0] dynamic_drive_count;
     reg is_initialized;
     reg is_loaded;
 
@@ -40,7 +40,7 @@ module stp16cpc26 #(parameter width = 32, dynamic_drive_interval = 1)
                 is_initialized <= 1'b1;
                 loaded_data <= data;
             end
-            stp16_sdi <= current_data[width-1] & (dynamic_drive_count == dynamic_drive_interval);
+            stp16_sdi <= current_data[width-1] & &dynamic_drive_count;
             case (state)
                 2'b00: begin
                     stp16_clk <= 1'b0;
@@ -67,7 +67,7 @@ module stp16cpc26 #(parameter width = 32, dynamic_drive_interval = 1)
                         stp16_noe <= 1'b0;
                         state <= 2'b00;
                     end else begin
-                        dynamic_drive_count <= (dynamic_drive_count == dynamic_drive_interval) ? 1'b0 : (dynamic_drive_count + 1'b1);
+                        dynamic_drive_count <= dynamic_drive_count + 1'b1;
                         stp16_le <= 1'b0;
                         state <= 2'b01;
                     end

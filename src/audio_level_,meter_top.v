@@ -42,7 +42,7 @@ module audio_level_meter_top(
     wire level_meter_ready;
     wire spdif_transmitter_valid;
     wire spdif_transmitter_ready;
-    fork_valid_ready fork_(
+    dataflow_fork_valid_ready dataflow_fork_(
         .i_valid(decoder_valid),
         .i_ready(decoder_ready),
         .o_valid({ level_meter_valid, spdif_transmitter_valid } ),

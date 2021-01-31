@@ -1,10 +1,10 @@
 `default_nettype none
 
-// Fork valid-and-ready
+// Dataflow Fork for valid and ready handshake
 // This implementation was based on the following article by @ikwzm.
 // https://qiita.com/ikwzm/items/e4ec2290e08326f5e06c
 
-module fork_valid_ready(
+module dataflow_fork_valid_ready(
     input wire i_valid,
     output wire i_ready,
     output wire [1:0] o_valid,
