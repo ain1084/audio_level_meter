@@ -17,7 +17,7 @@ module audio_level_meter(
     localparam sample_rate = 44100;
 
     // Number of samples in the section to find maximum PCM value.
-    localparam section_sample_count = 64;
+    localparam section_sample_count = 32;
 
     // Peak hold time (ms)
     localparam peak_hold_time_ms = 1000;
@@ -93,14 +93,14 @@ module audio_level_meter(
             combined_meter <= 0;
         end else if (indicator_position_to_meter_valid) begin
             if (is_buffer_left)
-                combined_meter[63:32] <= meter;
-            else
                 combined_meter[31:0] <= {
                     meter[ 0], meter[ 1], meter[ 2], meter[ 3], meter[ 4], meter[ 5], meter[ 6], meter[ 7],
                     meter[ 8], meter[ 9], meter[10], meter[11], meter[12], meter[13], meter[14], meter[15],
                     meter[16], meter[17], meter[18], meter[19], meter[20], meter[21], meter[22], meter[23],
                     meter[24], meter[25], meter[26], meter[27], meter[28], meter[29], meter[30], meter[31]
                 };
+            else
+                combined_meter[63:32] <= meter;
         end
     end
 
