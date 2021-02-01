@@ -49,7 +49,7 @@ module audio_level_meter_top(
         .o_ready({ level_meter_ready, spdif_transmitter_ready } )
     );
 
-    // data incoming 1 (audio level meter)
+    // dataflow intake 1 (audio level meter)
     audio_level_meter audio_level_meter_(
         .reset(reset),
         .clk(sclk),
@@ -57,14 +57,14 @@ module audio_level_meter_top(
         .i_valid(level_meter_valid),
         .i_ready(level_meter_ready),
         .i_is_left(is_decoder_left),
-        .i_audio(decoder_audio),
+        .i_audio(decoder_audio[31:16]),
         .stp16_le(stp16_le),
         .stp16_noe(stp16_noe),
         .stp16_clk(stp16_clk),
         .stp16_sdi(stp16_sdi)
     );
 
-    // data incoming 2 (spdif transmitter)
+    // dataflow intake 2 (spdif transmitter)
     spdif_transmitter spdif_transmitter_(
         .reset(reset),
         .clk(sclk),
