@@ -7,7 +7,7 @@ module audio_level_meter(
     input wire i_valid,
     output wire i_ready,
     input wire i_is_left,
-    input wire [31:0] i_audio,
+    input wire [15:0] i_audio,
     output wire stp16_le,
     output wire stp16_noe,
     output wire stp16_clk,
@@ -31,7 +31,7 @@ module audio_level_meter(
         .i_clk(clk),
         .i_valid(i_valid),
         .i_ready(i_ready),
-        .i_data({ i_is_left, i_audio[31:16]}),
+        .i_data({ i_is_left, i_audio[15:0]}),
         .o_clk(osc_clk),
         .o_valid(buffer_valid),
         .o_ready(buffer_ready),
@@ -70,46 +70,46 @@ module audio_level_meter(
         .o_position(position)
     );
 
-    // Make array of the level meter from indicator position.
-    wire indicator_position_to_meter_valid;
-    wire indicator_position_to_meter_ready;
-    wire [31:0] meter;
+    // Make array of the led from indicator position.
+    wire indicator_postion_to_array_valid;
+    wire indicator_postion_to_array_ready;
+    wire [31:0] led_array;
     localparam peak_hold_count = (sample_rate * peak_hold_time_ms) / (section_sample_count * 1000);
-    indicator_position_to_meter #(.peak_hold_count(peak_hold_count)) indicator_position_to_meter_(
+    indicator_position_to_array #(.peak_hold_count(peak_hold_count)) indicator_position_to_array_(
         .reset(reset),
         .clk(osc_clk),
         .i_valid(pcm_to_indicator_position_valid),
         .i_ready(pcm_to_indicator_position_ready),
         .i_is_left(is_buffer_left),
         .i_position(position),
-        .o_valid(indicator_position_to_meter_valid),
-        .o_ready(indicator_position_to_meter_ready),
-        .o_meter(meter)
+        .o_valid(indicator_postion_to_array_valid),
+        .o_ready(indicator_postion_to_array_ready),
+        .o_array(led_array)
     );
     
-    reg [63:0] combined_meter;
+    reg [63:0] lr_combined_array;
     always @(posedge osc_clk or posedge reset) begin
         if (reset) begin
-            combined_meter <= 0;
-        end else if (indicator_position_to_meter_valid) begin
+            lr_combined_array <= 0;
+        end else if (indicator_postion_to_array_valid) begin
             if (is_buffer_left)
-                combined_meter[31:0] <= {
-                    meter[ 0], meter[ 1], meter[ 2], meter[ 3], meter[ 4], meter[ 5], meter[ 6], meter[ 7],
-                    meter[ 8], meter[ 9], meter[10], meter[11], meter[12], meter[13], meter[14], meter[15],
-                    meter[16], meter[17], meter[18], meter[19], meter[20], meter[21], meter[22], meter[23],
-                    meter[24], meter[25], meter[26], meter[27], meter[28], meter[29], meter[30], meter[31]
+                lr_combined_array[31:0] <= {
+                    led_array[ 0], led_array[ 1], led_array[ 2], led_array[ 3], led_array[ 4], led_array[ 5], led_array[ 6], led_array[ 7],
+                    led_array[ 8], led_array[ 9], led_array[10], led_array[11], led_array[12], led_array[13], led_array[14], led_array[15],
+                    led_array[16], led_array[17], led_array[18], led_array[19], led_array[20], led_array[21], led_array[22], led_array[23],
+                    led_array[24], led_array[25], led_array[26], led_array[27], led_array[28], led_array[29], led_array[30], led_array[31]
                 };
             else
-                combined_meter[63:32] <= meter;
+                lr_combined_array[63:32] <= led_array;
         end
     end
 
     stp16cpc26 #(.width(64)) stp16cpc26_(
         .reset(reset),
         .clk(osc_clk),
-        .i_valid(indicator_position_to_meter_valid),
-        .i_ready(indicator_position_to_meter_ready),
-        .data(combined_meter),
+        .i_valid(indicator_postion_to_array_valid),
+        .i_ready(indicator_postion_to_array_ready),
+        .data(lr_combined_array),
         .stp16_le(stp16_le),
         .stp16_noe(stp16_noe),
         .stp16_clk(stp16_clk),

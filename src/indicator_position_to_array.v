@@ -1,6 +1,6 @@
 `default_nettype none
 
-module indicator_position_to_meter #(parameter width = 32, peak_hold_count = 1000)(
+module indicator_position_to_array #(parameter width = 32, peak_hold_count = 1000)(
     input wire reset,
     input wire clk,
     input wire i_valid,
@@ -9,7 +9,7 @@ module indicator_position_to_meter #(parameter width = 32, peak_hold_count = 100
     input wire [$clog2(width)-1:0] i_position,
     output reg o_valid,
     input wire o_ready,
-    output wire [width-1:0] o_meter);
+    output wire [width-1:0] o_array);
 
     reg [$clog2(width)-1:0] peak_hold[1:0];
     reg [$clog2(width)-1:0] max_position[1:0];
@@ -19,9 +19,8 @@ module indicator_position_to_meter #(parameter width = 32, peak_hold_count = 100
     reg [$clog2(width)-1:0] cur_peak_hold;
 
     reg [$clog2(width)-1:0] count;
-    reg [width-1:0] meter;
-
-    assign o_meter = meter;
+    reg [width-1:0] array;
+    assign o_array = array;
 
     always @(posedge clk or posedge reset) begin
         if (reset) begin
@@ -35,7 +34,7 @@ module indicator_position_to_meter #(parameter width = 32, peak_hold_count = 100
             peak_hold_sample_count[1] <= 0;
             cur_position <= 0;
             cur_peak_hold <= 0;
-            meter <= 0;
+            array <= 0;
             count <= 0;
         end else if (i_valid && i_ready) begin
 			if (i_position >= peak_hold[i_is_left] || peak_hold_sample_count[i_is_left] == 0) begin
@@ -57,7 +56,7 @@ module indicator_position_to_meter #(parameter width = 32, peak_hold_count = 100
             end
         end else if (!i_ready) begin
             count <= count + 1'b1;
-            meter <= { count == cur_peak_hold || count <= cur_position, meter[width-1:1] };
+            array <= { count == cur_peak_hold || count <= cur_position, array[width-1:1] };
             if (&count) begin
                 o_valid <= 1'b1;
             end

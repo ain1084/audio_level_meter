@@ -9,9 +9,6 @@
         <Source name="src/stp16cpc26.v" type="Verilog" type_short="Verilog">
             <Options/>
         </Source>
-        <Source name="src/indicator_position_to_meter.v" type="Verilog" type_short="Verilog">
-            <Options/>
-        </Source>
         <Source name="src/pcm_to_indicator_position.v" type="Verilog" type_short="Verilog">
             <Options/>
         </Source>
@@ -40,6 +37,9 @@
             <Options/>
         </Source>
         <Source name="src/dataflow_fork_valid_ready.v" type="Verilog" type_short="Verilog">
+            <Options/>
+        </Source>
+        <Source name="src/indicator_position_to_array.v" type="Verilog" type_short="Verilog">
             <Options/>
         </Source>
         <Source name="audio_level_meter.lpf" type="Logic Preference" type_short="LPF">
