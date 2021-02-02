@@ -1,19 +1,18 @@
 `default_nettype none
 
-module indicator_position_to_array #(parameter width = 32, peak_hold_count = 1000)(
+module position_to_array #(parameter width = 32, peak_hold_count = 1000)(
     input wire reset,
     input wire clk,
     input wire i_valid,
     output reg i_ready,
-    input wire i_is_left,
     input wire [$clog2(width)-1:0] i_position,
     output reg o_valid,
     input wire o_ready,
     output wire [width-1:0] o_array);
 
-    reg [$clog2(width)-1:0] peak_hold[1:0];
-    reg [$clog2(width)-1:0] max_position[1:0];
-    reg [$clog2(peak_hold_count+1)-1:0] peak_hold_sample_count[1:0];
+    reg [$clog2(width)-1:0] peak_hold;
+    reg [$clog2(width)-1:0] max_position;
+    reg [$clog2(peak_hold_count+1)-1:0] peak_hold_sample_count;
 
     reg [$clog2(width)-1:0] cur_position;
     reg [$clog2(width)-1:0] cur_peak_hold;
@@ -26,26 +25,23 @@ module indicator_position_to_array #(parameter width = 32, peak_hold_count = 100
         if (reset) begin
             i_ready <= 1'b1;
             o_valid <= 1'b0;
-            peak_hold[0] <= 0;
-            peak_hold[1] <= 0;
-			max_position[0] <= 0;
-			max_position[1] <= 0;
-            peak_hold_sample_count[0] <= 0;
-            peak_hold_sample_count[1] <= 0;
+            peak_hold <= 0;
+			max_position <= 0;
+            peak_hold_sample_count <= 0;
             cur_position <= 0;
             cur_peak_hold <= 0;
             array <= 0;
             count <= 0;
         end else if (i_valid && i_ready) begin
-			if (i_position >= peak_hold[i_is_left] || peak_hold_sample_count[i_is_left] == 0) begin
-				peak_hold[i_is_left] <= i_position > max_position[i_is_left] ? i_position : max_position[i_is_left];
-				peak_hold_sample_count[i_is_left] <= peak_hold_count;
+			if (i_position >= peak_hold || peak_hold_sample_count == 0) begin
+				peak_hold <= i_position > max_position ? i_position : max_position;
+				peak_hold_sample_count <= peak_hold_count;
 				cur_peak_hold <= i_position;
-				max_position[i_is_left] <= i_position;
+				max_position <= i_position;
 			end else begin
-				peak_hold_sample_count[i_is_left] <= peak_hold_sample_count[i_is_left] - 1'b1;
-				cur_peak_hold <= peak_hold[i_is_left];
-				max_position[i_is_left] <= max_position[i_is_left] < i_position ? i_position : max_position[i_is_left];
+				peak_hold_sample_count <= peak_hold_sample_count - 1'b1;
+				cur_peak_hold <= peak_hold;
+				max_position <= max_position < i_position ? i_position : max_position;
 			end
             cur_position <= i_position;
             i_ready <= 1'b0;

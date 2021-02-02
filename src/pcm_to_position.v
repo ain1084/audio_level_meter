@@ -1,6 +1,6 @@
 `default_nettype none
 
-module pcm_to_indicator_position(
+module pcm_to_position(
     input wire reset,
     input wire clk,
     input wire i_valid,
