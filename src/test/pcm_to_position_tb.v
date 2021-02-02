@@ -1,12 +1,12 @@
 `timescale 1ns/1ps
 
-module pcm_to_indicator_position_tb();
+module pcm_to_position_tb();
 
 	parameter STEP = 100;	// 10MHz
 	parameter TICKS = 300;
 
 	initial begin
-		$dumpfile("pcm_to_indicator_position_tb.vcd");
+		$dumpfile("pcm_to_position_tb.vcd");
 		$dumpvars;
 	end
 		
@@ -38,15 +38,15 @@ module pcm_to_indicator_position_tb();
     reg i_pcm_to_level_ready;
     wire [4:0] position;
 
-	pcm_to_indicator_position pcm_to_indicator_position_(
+	pcm_to_position inst(
         .clk(Clock),
         .reset(Reset),
         .i_valid(o_pcm_valid),
         .i_ready(o_pcm_ready),
-        .pcm(pcm),
+        .i_pcm(pcm),
         .o_valid(i_pcm_to_level_valid),
         .o_ready(i_pcm_to_level_ready),
-        .position(position));
+        .o_position(position));
 
     reg show_state;
     always @(posedge Clock or posedge Reset) begin

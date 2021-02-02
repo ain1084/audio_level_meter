@@ -1,12 +1,12 @@
 `default_nettype none
 `timescale 1ns/1ps
 
-module indicator_position_to_meter_tb();
+module position_to_array_tb();
 
 	parameter STEP = 100;	// 10MHz
 
 	initial begin
-		$dumpfile("indicator_position_to_meter_tb.vcd");
+		$dumpfile("position_to_array_tb.vcd");
 		$dumpvars;
 	end
 		
@@ -23,22 +23,21 @@ module indicator_position_to_meter_tb();
     wire o_valid;
     reg o_ready;
 
-    localparam peak_hold_samples = 3;
+    localparam peak_hold_count = 3;
 
     reg [4:0] position;
 
-    wire [31:0] o_meter;
+    wire [31:0] o_array;
    
-    indicator_position_to_meter #(.peak_hold_samples(peak_hold_samples)) inst(
+    position_to_array #(.peak_hold_count(peak_hold_count)) inst(
         .reset(reset),
         .clk(clk),
         .i_valid(i_valid),
         .i_ready(i_ready),
         .i_position(position),
-        .i_is_left(1'b0),
         .o_valid(o_valid),
         .o_ready(o_ready),
-        .o_meter(o_meter)
+        .o_array(o_array)
     );
 
     task set_position(input [4:0] pos);
