@@ -8,8 +8,7 @@ module spdif_transmitter(
     output wire i_ready,
     input wire i_is_left,
     input wire [23:0] i_audio,
-    output wire spdif
-    );
+    output wire spdif);
 
     reg clk128;
     always @(posedge clk256 or posedge reset)

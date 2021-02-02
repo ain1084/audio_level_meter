@@ -2,14 +2,11 @@
 <BaliProject version="3.2" title="audio_level_meter" device="LCMXO2-1200HC-5SG32C" default_implementation="impl1">
     <Options/>
     <Implementation title="impl1" dir="impl1" description="impl1" synthesis="lse" default_strategy="Strategy1">
-        <Options def_top="audio_level_meter_top" top="audio_level_meter_top"/>
+        <Options def_top="dataflow_select" top="audio_level_meter_top"/>
         <Source name="src/audio_level_,meter_top.v" type="Verilog" type_short="Verilog">
             <Options top_module="audio_level_meter_top"/>
         </Source>
         <Source name="src/stp16cpc26.v" type="Verilog" type_short="Verilog">
-            <Options/>
-        </Source>
-        <Source name="src/pcm_to_indicator_position.v" type="Verilog" type_short="Verilog">
             <Options/>
         </Source>
         <Source name="src/section_maximum_value.v" type="Verilog" type_short="Verilog">
@@ -36,10 +33,22 @@
         <Source name="src/spdif_transmitter.v" type="Verilog" type_short="Verilog">
             <Options/>
         </Source>
-        <Source name="src/dataflow_fork_valid_ready.v" type="Verilog" type_short="Verilog">
+        <Source name="src/dataflow_fork.v" type="Verilog" type_short="Verilog">
             <Options/>
         </Source>
-        <Source name="src/indicator_position_to_array.v" type="Verilog" type_short="Verilog">
+        <Source name="src/dataflow_branch.v" type="Verilog" type_short="Verilog">
+            <Options/>
+        </Source>
+        <Source name="src/dataflow_select.v" type="Verilog" type_short="Verilog">
+            <Options/>
+        </Source>
+        <Source name="src/position_to_array.v" type="Verilog" type_short="Verilog">
+            <Options/>
+        </Source>
+        <Source name="src/pcm_to_position.v" type="Verilog" type_short="Verilog">
+            <Options/>
+        </Source>
+        <Source name="src/dataflow_join.v" type="Verilog" type_short="Verilog">
             <Options/>
         </Source>
         <Source name="audio_level_meter.lpf" type="Logic Preference" type_short="LPF">
