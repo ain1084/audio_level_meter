@@ -7,3 +7,5 @@
 /impl1
 /reportview.xml
 /promote.xml
+/.recovery
+/src/test/*.vcd
