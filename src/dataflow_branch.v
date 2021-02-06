@@ -11,7 +11,7 @@ module dataflow_branch(
     output wire [1:0] o_valid,
     input wire [1:0] o_ready);
 
-    assign i_ready = i_valid && o_ready[select];
+    assign i_ready = o_ready[select];
     assign o_valid = { i_valid && select == 1'b1, i_valid && select == 1'b0 };
 
 endmodule
