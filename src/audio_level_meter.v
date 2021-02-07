@@ -19,8 +19,8 @@ module audio_level_meter(
     // Reference sampling rate (Hz)
     localparam sample_rate = 44100;
 
-    // Number of samples in the section to find maximum PCM value.
-    localparam section_sample_count = 6'd32;
+    // Number of samples in the section to find difference PCM.
+    localparam section_sample_count = 5'd31;
 
     // Peak hold time (ms)
     localparam peak_hold_time_ms = 10'd1000;
@@ -56,7 +56,7 @@ module audio_level_meter(
     wire [1:0] array_ready;
 
     // Left
-    wire [31:0] led_left;
+    wire [indicator_width-1:0] led_left;
     audio_channel #(.indicator_width(indicator_width), .sample_rate(sample_rate), .section_sample_count(section_sample_count), .peak_hold_time_ms(peak_hold_time_ms)) channel_l(
         .reset(reset),
         .clk(osc_clk),
@@ -74,7 +74,7 @@ module audio_level_meter(
     );
 
     // Right
-    wire [31:0] led_right;
+    wire [indicator_width-1:0] led_right;
     audio_channel #(.indicator_width(indicator_width), .sample_rate(sample_rate), .section_sample_count(section_sample_count), .peak_hold_time_ms(peak_hold_time_ms)) channel_r(
         .reset(reset),
         .clk(osc_clk),
