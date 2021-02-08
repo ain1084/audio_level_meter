@@ -1,12 +1,12 @@
 `default_nettype none
 `timescale 1ns/1ps
 
-module section_difference_tb();
+module section_min_max_tb();
 
 	parameter STEP = 100;	// 10MHz
 
 	initial begin
-		$dumpfile("section_difference_tb.vcd");
+		$dumpfile("section_min_max_tb.vcd");
 		$dumpvars;
 	end
 		
@@ -22,14 +22,15 @@ module section_difference_tb();
     localparam width = 16;
 
     reg [width-1:0] i_value;
-    wire [width-1:0] o_value;
+    wire [width-1:0] o_min_value;
+    wire [width-1:0] o_max_value;
     reg i_is_left;
     reg i_valid;
     wire i_ready;
     wire o_valid;
     reg o_ready;
 
-    section_difference #(.width(width), .sample_count(sample_count)) inst(
+    section_min_max #(.width(width), .sample_count(sample_count)) inst(
         .reset(reset),
         .clk(clk),
         .i_valid(i_valid),
@@ -37,7 +38,8 @@ module section_difference_tb();
         .i_value(i_value),
         .o_valid(o_valid),
         .o_ready(o_ready),
-        .o_value(o_value)
+        .o_min_value(o_min_value),
+        .o_max_value(o_max_value)
     );
 
     task set_value(input [width-1:0] value);
@@ -63,20 +65,19 @@ module section_difference_tb();
         i_value = 1'b0;
 
         set_value(16'h1111);
-
-        set_value(16'h1111);
+        set_value(16'h9999);
         set_value(16'h4444);
         set_value(16'h2222);
 
         set_value(16'h6666);
         set_value(16'h1111);
         set_value(16'h2222);
+        set_value(16'h5555);
 
-        set_value(16'h0000);
-        set_value(16'h0000);
-        set_value(16'h0000);
-
-        set_value(16'h0000);
+        set_value(16'h9999);
+        set_value(16'hffff);
+        set_value(16'h9999);
+        set_value(16'h1111);
 
 		repeat (8) @(posedge clk) reset = 1'b0;
 

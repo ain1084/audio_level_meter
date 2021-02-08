@@ -11,18 +11,20 @@ module audio_channel #(parameter indicator_width = 32, sample_rate = 44100, peak
     input wire o_ready,
     output wire [indicator_width-1:0] o_array);
 
-    wire difference_value_valid;
-    wire difference_value_ready;
-	wire [15:0] difference_value;
-    section_difference #(.sample_count(section_sample_count)) section_diff_(
+    wire section_value_valid;
+    wire section_value_ready;
+	wire [15:0] min_value;
+	wire [15:0] max_value;
+    section_min_max #(.sample_count(section_sample_count)) section_diff_(
         .reset(reset),
         .clk(clk),
         .i_valid(i_valid),
         .i_ready(i_ready),
         .i_value({ ~i_value[15], i_value[14:0] }),
-        .o_valid(difference_value_valid),
-        .o_ready(difference_value_ready),
-        .o_value(difference_value)
+        .o_valid(section_value_valid),
+        .o_ready(section_value_ready),
+        .o_min_value(min_value),
+		.o_max_value(max_value)
     );
 
     wire position_valid;
@@ -31,9 +33,9 @@ module audio_channel #(parameter indicator_width = 32, sample_rate = 44100, peak
     pcm_to_position position_(
         .reset(reset),
         .clk(clk),
-        .i_valid(difference_value_valid),
-        .i_ready(difference_value_ready),
-        .i_value(difference_value),
+        .i_valid(section_value_valid),
+        .i_ready(section_value_ready),
+        .i_value(max_value - min_value),
         .o_valid(position_valid),
         .o_ready(position_ready),
         .o_position(position)
