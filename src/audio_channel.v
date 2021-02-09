@@ -1,7 +1,7 @@
     // Find the maximum value in the section
 `default_nettype none
 
-module audio_channel #(parameter indicator_width = 32, sample_rate = 44100, peak_hold_time_ms = 10000, section_sample_count = 700) (
+module audio_channel #(parameter indicator_width = 32, sample_rate = 44100, peak_hold_time_ms = 10000, section_sample_count = 32) (
     input wire reset,
     input wire clk,
     input wire i_valid,
@@ -13,9 +13,8 @@ module audio_channel #(parameter indicator_width = 32, sample_rate = 44100, peak
 
     wire section_value_valid;
     wire section_value_ready;
-	wire [15:0] min_value;
-	wire [15:0] max_value;
-    section_min_max #(.sample_count(section_sample_count)) section_diff_(
+	wire [15:0] diff_value;
+    section_diff_buffer #(.sample_count(section_sample_count), .depth_bits(5)) section_diff_(
         .reset(reset),
         .clk(clk),
         .i_valid(i_valid),
@@ -23,8 +22,7 @@ module audio_channel #(parameter indicator_width = 32, sample_rate = 44100, peak
         .i_value({ ~i_value[15], i_value[14:0] }),
         .o_valid(section_value_valid),
         .o_ready(section_value_ready),
-        .o_min_value(min_value),
-		.o_max_value(max_value)
+        .o_value(diff_value)
     );
 
     wire position_valid;
@@ -35,7 +33,7 @@ module audio_channel #(parameter indicator_width = 32, sample_rate = 44100, peak
         .clk(clk),
         .i_valid(section_value_valid),
         .i_ready(section_value_ready),
-        .i_value(max_value - min_value),
+        .i_value(diff_value),
         .o_valid(position_valid),
         .o_ready(position_ready),
         .o_position(position)
