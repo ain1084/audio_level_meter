@@ -15,7 +15,7 @@ module section_min_max #(parameter width = 16, sample_count = 16)(
 
     reg [width-1:0] max_value;
 	reg [width-1:0] min_value;
-    reg [$clog2(sample_count)-1:0] count;
+    reg [$clog2(sample_count+1)-1:0] count;
 
     always @(posedge clk or posedge reset) begin
         if (reset) begin
