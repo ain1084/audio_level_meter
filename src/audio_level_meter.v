@@ -19,11 +19,14 @@ module audio_level_meter(
     // Reference sampling rate (Hz)
     localparam sample_rate = 44100;
 
-    // Number of samples in the section to find difference PCM.
-    localparam section_sample_count = 5'd31;
+    // Number of samples in the min-max section.
+    localparam section_sample_count = 32;
+
+    // Number of buffers min-max section.
+    localparam buffer_depth = 16;
 
     // Peak hold time (ms)
-    localparam peak_hold_time_ms = 10'd1000;
+    localparam peak_hold_time_ms = 1000;
 
     wire buffer_valid;
     wire buffer_ready;
@@ -34,7 +37,7 @@ module audio_level_meter(
         .i_clk(clk),
         .i_valid(i_valid),
         .i_ready(i_ready),
-        .i_data({ i_is_left, i_audio[15:0]}),
+        .i_data({ i_is_left, i_audio }),
         .o_clk(osc_clk),
         .o_valid(buffer_valid),
         .o_ready(buffer_ready),
@@ -57,7 +60,7 @@ module audio_level_meter(
 
     // Left
     wire [indicator_width-1:0] led_left;
-    audio_channel #(.indicator_width(indicator_width), .sample_rate(sample_rate), .section_sample_count(section_sample_count), .peak_hold_time_ms(peak_hold_time_ms)) channel_l(
+    audio_channel #(.indicator_width(indicator_width), .sample_rate(sample_rate), .section_sample_count(section_sample_count), .peak_hold_time_ms(peak_hold_time_ms), .buffer_depth(buffer_depth)) channel_l(
         .reset(reset),
         .clk(osc_clk),
         .i_valid(position_branch_valid[1]),
@@ -75,7 +78,7 @@ module audio_level_meter(
 
     // Right
     wire [indicator_width-1:0] led_right;
-    audio_channel #(.indicator_width(indicator_width), .sample_rate(sample_rate), .section_sample_count(section_sample_count), .peak_hold_time_ms(peak_hold_time_ms)) channel_r(
+    audio_channel #(.indicator_width(indicator_width), .sample_rate(sample_rate), .section_sample_count(section_sample_count), .peak_hold_time_ms(peak_hold_time_ms), .buffer_depth(buffer_depth)) channel_r(
         .reset(reset),
         .clk(osc_clk),
         .i_valid(position_branch_valid[0]),

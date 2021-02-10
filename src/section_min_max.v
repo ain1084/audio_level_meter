@@ -15,7 +15,8 @@ module section_min_max #(parameter width = 16, sample_count = 16)(
 
     reg [width-1:0] max_value;
 	reg [width-1:0] min_value;
-    reg [$clog2(sample_count+1)-1:0] count;
+    reg [$clog2(sample_count)-1:0] count;
+    wire [$clog2(sample_count)-1:0] count_last = sample_count - 1'b1;
 
     always @(posedge clk or posedge reset) begin
         if (reset) begin
@@ -26,7 +27,7 @@ module section_min_max #(parameter width = 16, sample_count = 16)(
             o_max_value <= 0;
             o_min_value <= -1;
         end else begin
-             if (count == sample_count && i_valid) begin
+             if (count == count_last && i_valid) begin
                 o_min_value <= min_value;
                 o_max_value <= max_value;
                 max_value <= i_value;

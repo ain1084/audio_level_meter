@@ -57,6 +57,9 @@
         <Source name="src/section_min_max.v" type="Verilog" type_short="Verilog">
             <Options/>
         </Source>
+        <Source name="src/single_port_ram.v" type="Verilog" type_short="Verilog">
+            <Options/>
+        </Source>
         <Source name="audio_level_meter.lpf" type="Logic Preference" type_short="LPF">
             <Options/>
         </Source>

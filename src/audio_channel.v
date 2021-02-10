@@ -1,7 +1,7 @@
     // Find the maximum value in the section
 `default_nettype none
 
-module audio_channel #(parameter indicator_width = 32, sample_rate = 44100, peak_hold_time_ms = 10000, section_sample_count = 32) (
+module audio_channel #(parameter indicator_width = 32, sample_rate = 44100, peak_hold_time_ms = 10000, section_sample_count = 32, buffer_depth = 64) (
     input wire reset,
     input wire clk,
     input wire i_valid,
@@ -14,7 +14,7 @@ module audio_channel #(parameter indicator_width = 32, sample_rate = 44100, peak
     wire section_value_valid;
     wire section_value_ready;
 	wire [15:0] diff_value;
-    section_diff_buffer #(.sample_count(section_sample_count), .depth_bits(5)) section_diff_(
+    section_diff_buffer #(.sample_count(section_sample_count), .buffer_depth(buffer_depth)) section_diff_(
         .reset(reset),
         .clk(clk),
         .i_valid(i_valid),
