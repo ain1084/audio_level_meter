@@ -18,7 +18,6 @@ module section_diff_buffer_tb();
 		end
 	end
 
-    localparam sample_count = 3;
     localparam width = 16;
 
     reg [width-1:0] i_value;
@@ -29,7 +28,8 @@ module section_diff_buffer_tb();
     wire o_valid;
     reg o_ready;
 
-    section_diff_buffer #(.width(width), .sample_count(sample_count)) inst(
+    localparam sample_count = 4;
+    section_diff_buffer #(.width(width), .sample_count(sample_count), .buffer_depth(4)) inst(
         .reset(reset),
         .clk(clk),
         .i_valid(i_valid),
@@ -65,20 +65,51 @@ module section_diff_buffer_tb();
         set_value(16'h1111);
         set_value(16'h1111);
         set_value(16'h1111);
+        set_value(16'h1111);
+
+        set_value(16'h1111);
+        set_value(16'h1111);
+        set_value(16'h1111);
+        set_value(16'h1111);
+
+        set_value(16'h1111);
+        set_value(16'h1111);
+        set_value(16'h1111);
+        set_value(16'h1111);
+
+        set_value(16'h1111);
+        set_value(16'h1111);
+        set_value(16'h1111);
+        set_value(16'h1111);
+
+        set_value(16'h2222);
+        set_value(16'h2222);
+        set_value(16'h2222);
         set_value(16'h2222);
 
+        set_value(16'h3333);
+        set_value(16'h3333);
+        set_value(16'h3333);
+        set_value(16'h3333);
+
         set_value(16'h4444);
-        set_value(16'h1111);
-        set_value(16'h5555);
+        set_value(16'h4444);
+        set_value(16'h4444);
+        set_value(16'h4444);
+
+        set_value(16'h6666);
+        set_value(16'h2222);
+        set_value(16'h2222);
         set_value(16'h5555);
 
-        set_value(16'h9999);
+
         set_value(16'h7777);
-        set_value(16'h9999);
+        set_value(16'h7777);
+        set_value(16'h7777);
         set_value(16'h7777);
 
         set_value(16'h1111);
-        set_value(16'h1111);
+        set_value(16'h7777);
         set_value(16'h4444);
         set_value(16'h2222);
 
@@ -87,40 +118,11 @@ module section_diff_buffer_tb();
         set_value(16'h2222);
         set_value(16'h5555);
 
-        set_value(16'h9999);
         set_value(16'h7777);
-        set_value(16'h9999);
         set_value(16'h7777);
-
-        set_value(16'h9999);
         set_value(16'h7777);
-        set_value(16'h9999);
         set_value(16'h7777);
 
-        set_value(16'h6666);
-        set_value(16'h1111);
-        set_value(16'h2222);
-        set_value(16'h5555);
-
-        set_value(16'h9999);
-        set_value(16'h7777);
-        set_value(16'h9999);
-        set_value(16'h7777);
-
-        set_value(16'h1111);
-        set_value(16'h9999);
-        set_value(16'h4444);
-        set_value(16'h2222);
-
-        set_value(16'h6666);
-        set_value(16'h1111);
-        set_value(16'h2222);
-        set_value(16'h5555);
-
-        set_value(16'h9999);
-        set_value(16'h7777);
-        set_value(16'h9999);
-        set_value(16'h7777);
 
         set_value(16'h8888);
         set_value(16'h9999);
