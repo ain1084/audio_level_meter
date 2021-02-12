@@ -26,23 +26,23 @@ module position_to_array #(parameter width = 32, peak_hold_count = 1000)(
             i_ready <= 1'b1;
             o_valid <= 1'b0;
             peak_hold <= 0;
-			max_position <= 0;
+            max_position <= 0;
             peak_hold_sample_count <= 0;
             cur_position <= 0;
             cur_peak_hold <= 0;
             array <= 0;
             count <= 0;
         end else if (i_valid && i_ready) begin
-			if (i_position >= peak_hold || peak_hold_sample_count == 0) begin
-				peak_hold <= i_position > max_position ? i_position : max_position;
-				peak_hold_sample_count <= peak_hold_count;
-				cur_peak_hold <= i_position;
-				max_position <= i_position;
-			end else begin
-				peak_hold_sample_count <= peak_hold_sample_count - 1'b1;
-				cur_peak_hold <= peak_hold;
-				max_position <= max_position < i_position ? i_position : max_position;
-			end
+            if (i_position >= peak_hold || peak_hold_sample_count == 0) begin
+                peak_hold <= i_position > max_position ? i_position : max_position;
+                peak_hold_sample_count <= peak_hold_count;
+                cur_peak_hold <= i_position;
+                max_position <= i_position;
+            end else begin
+                peak_hold_sample_count <= peak_hold_sample_count - 1'b1;
+                cur_peak_hold <= peak_hold;
+                max_position <= max_position < i_position ? i_position : max_position;
+            end
             cur_position <= i_position;
             i_ready <= 1'b0;
         end else if (o_valid) begin

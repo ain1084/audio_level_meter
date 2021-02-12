@@ -1,6 +1,6 @@
 `default_nettype none
 
-// Dataflow select for valid and ready handshake
+// Dataflow select for valid and ready handshake.
 // This implementation was based on the following article by @ikwzm.
 // https://qiita.com/ikwzm/items/e4ec2290e08326f5e06c
 

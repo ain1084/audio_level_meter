@@ -3,20 +3,20 @@
 
 module section_min_max_buffer_tb();
 
-	parameter STEP = 100;	// 10MHz
+    parameter STEP = 100;	// 10MHz
 
-	initial begin
-		$dumpfile("section_min_max_buffer_tb.vcd");
-		$dumpvars;
-	end
-		
-	reg clk;
-	initial begin
-		clk = 1'b0;
-		forever begin
-			#(STEP / 2) clk = ~clk;
-		end
-	end
+    initial begin
+        $dumpfile("section_min_max_buffer_tb.vcd");
+        $dumpvars;
+    end
+
+    reg clk;
+    initial begin
+        clk = 1'b0;
+        forever begin
+            #(STEP / 2) clk = ~clk;
+        end
+    end
 
     localparam width = 16;
 
@@ -25,14 +25,13 @@ module section_min_max_buffer_tb();
     reg i_valid = 1'b0;
     wire i_ready;
 
-    localparam sample_count = 4;
 
     wire [width-1:0] min_value;
     wire [width-1:0] max_value;
-	wire min_max_valid;
-	wire min_max_ready;
+    wire min_max_valid;
+    wire min_max_ready;
 
-    section_min_max #(.width(width), .sample_count(sample_count)) min_max_(
+    section_min_max #(.width(width), .sample_count(4)) min_max_(
         .reset(reset),
         .clk(clk),
         .i_valid(i_valid),
@@ -46,7 +45,7 @@ module section_min_max_buffer_tb();
 
     wire o_valid;
     reg o_ready;
-    section_min_max_buffer #(.width(width), .sample_count(sample_count), .buffer_depth(4)) min_max_buffer_(
+    section_min_max_buffer #(.width(width), .buffer_depth(4)) min_max_buffer_(
         .reset(reset),
         .clk(clk),
         .i_valid(min_max_valid),
@@ -62,22 +61,22 @@ module section_min_max_buffer_tb();
         begin
             i_valid <= 1'b1;
             i_value <= value;
-			wait (i_ready) @(posedge clk);
+            wait (i_ready) @(posedge clk);
             i_valid <= 1'b0;
             @(posedge clk);
         end
     endtask
 
 
-	reg reset;
-	initial begin
-		reset = 1'b0;
+    reg reset;
+    initial begin
+        reset = 1'b0;
         i_value = 1'b0;
         o_ready = 1'b1;
         @(posedge clk);
 
-		repeat (2) @(posedge clk) reset = 1'b1;
-		repeat (2) @(posedge clk) reset = 1'b0;
+        repeat (2) @(posedge clk) reset = 1'b1;
+        repeat (2) @(posedge clk) reset = 1'b0;
 
         set_value(16'h1111);
         set_value(16'h1111);
@@ -98,14 +97,14 @@ module section_min_max_buffer_tb();
         set_value(16'h1111);
         set_value(16'h1111);
         set_value(16'h1111);
-		// 1111, 1111, 1111, 1111
+        // 1111, 1111, 1111, 1111
         // 1111, 1111, 1111, 1111 -> diff = 16'h0000
 
         set_value(16'h2222);
         set_value(16'h2222);
         set_value(16'h2222);
         set_value(16'h2222);
-		// 2222, 1111, 1111, 1111
+        // 2222, 1111, 1111, 1111
         // 2222, 1111, 1111, 1111 -> diff = 16'h1111
 
         set_value(16'h3333);
@@ -162,10 +161,10 @@ module section_min_max_buffer_tb();
         set_value(16'h1111);
         // 1111, 8888, 9999, 7777 -> diff = 16'h8888
 
-		repeat (8) @(posedge clk) reset = 1'b0;
+        repeat (8) @(posedge clk) reset = 1'b0;
 
         $finish;
-	end
+    end
 
 
 endmodule
