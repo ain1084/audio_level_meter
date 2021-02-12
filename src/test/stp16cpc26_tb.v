@@ -12,8 +12,8 @@ module stp16cpc26_tb();
         
     reg clk;
     initial begin
-        clk = 1'b0;
-        forever #(STEP / 2) clk = ~clk;
+        clk <= 1'b0;
+        forever #(STEP / 2) clk <= ~clk;
     end
 
     reg reset;
@@ -40,18 +40,29 @@ module stp16cpc26_tb();
     initial begin
 
         // reset
-        reset = 1'b0;
-        i_valid = 1'b0;
-        repeat (2) @(posedge clk) reset = 1'b1;
-        @(posedge clk) reset <= 1'b0;
-        repeat (4) @(posedge clk);
+        reset <= 1'b0;
+        i_valid <= 1'b0;
+        repeat (2) @(posedge clk) reset <= 1'b1;
+        repeat (4) @(posedge clk) reset <= 1'b0;
 
-        i_valid = 1'b1;
-        data = 32'h12345678;
-        wait(!i_ready) @(posedge clk);
-        i_valid = 1'b1;
-        data = 32'h55555555;
-        wait(!i_ready) @(posedge clk);
+        i_valid <= 1'b1;
+        data <= 32'h12345678;
+        wait(i_ready) @(posedge clk);
+        i_valid <= 1'b0;
+        @(posedge clk);
+
+        i_valid <= 1'b1;
+        data <= 32'h55555555;
+        wait(i_ready) @(posedge clk);
+        i_valid <= 1'b0;
+        @(posedge clk);
+
+        i_valid <= 1'b1;
+        data <= 32'h11111111;
+        wait(i_ready) @(posedge clk);
+        i_valid <= 1'b0;
+        @(posedge clk);
+
         repeat (256) @(posedge clk);
 
 

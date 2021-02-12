@@ -1,5 +1,5 @@
 `default_nettype none
-`timescale 1ns/1ps
+`timescale 1ns/1ns
 
 module position_to_array_tb();
 
@@ -18,7 +18,7 @@ module position_to_array_tb();
 		end
 	end
 
-    reg i_valid;
+    reg i_valid = 1'b0;
     wire i_ready;
     wire o_valid;
     reg o_ready;
@@ -42,13 +42,10 @@ module position_to_array_tb();
 
     task set_position(input [4:0] pos);
         begin
-
-            wait (i_ready) @(posedge clk);
-            i_valid = 1'b1;
-            position = pos;
-            wait (!i_ready) @(posedge clk);
-            i_valid = 1'b0;
-
+            i_valid <= 1'b1;
+            position <= pos;
+			wait (i_ready) @(posedge clk);
+            i_valid <= 1'b0;
             wait (o_valid) @(posedge clk);
         end
     endtask
@@ -57,10 +54,11 @@ module position_to_array_tb();
 	reg reset;
 	initial begin
 		reset = 1'b0;
+        o_ready = 1'b1;
+        i_valid = 1'b0;
+
 		repeat (2) @(posedge clk) reset = 1'b1;
 		repeat (2) @(posedge clk) reset = 1'b0;
-
-        o_ready = 1'b1;
 
         set_position(31);
         set_position(10);
@@ -69,7 +67,7 @@ module position_to_array_tb();
         set_position(3);
         set_position(2);
         set_position(1);
-
+ 
 		repeat (8) @(posedge clk) reset = 1'b0;
 
         $finish;
