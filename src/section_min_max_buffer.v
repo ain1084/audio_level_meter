@@ -1,6 +1,6 @@
 `default_nettype none
 
-module section_min_max_buffer #(parameter width = 16, sample_count = 32, buffer_depth = 128)(
+module section_min_max_buffer #(parameter width = 16, buffer_depth = 128)(
     input wire reset,
     input wire clk,
     input wire i_valid,
@@ -12,22 +12,18 @@ module section_min_max_buffer #(parameter width = 16, sample_count = 32, buffer_
     output reg [width-1:0] o_value);
 
     localparam buffer_depth_bits = $clog2(buffer_depth);
-    wire [buffer_depth_bits-1:0] buffer_depth_last = buffer_depth - 1;
+    wire [buffer_depth_bits - 1:0] buffer_depth_last = buffer_depth - 1;
 
-    reg [buffer_depth_bits-1:0] buffer_ad;
-    wire [width*2-1:0] buffer_rd;
+    reg [buffer_depth_bits - 1:0] buffer_ad;
+    wire [width * 2 - 1:0] buffer_rd;
     wire buffer_we = i_valid && i_ready;
 
-    single_port_ram #(.width(width*2), .size(buffer_depth)) ram_(
+    single_port_ram #(.width(width * 2), .size(buffer_depth)) ram_(
         .clk(clk),
-        .ad(buffer_ad),
-        .rd(buffer_rd),
-        .we(buffer_we),
-        .wd({ i_max_value, i_min_value }));
-
-    function [buffer_depth_bits-1:0] round_incriment(input [buffer_depth_bits-1:0] in);
-        round_incriment = in == buffer_depth_last ? 1'b0 : (in + 1'b1);
-    endfunction
+        .addr(buffer_ad),
+        .read_data(buffer_rd),
+        .write_en(buffer_we),
+        .write_data({ i_max_value, i_min_value }));
 
     reg [buffer_depth_bits-1:0] next_ad;
     reg [width-1:0] max_value;

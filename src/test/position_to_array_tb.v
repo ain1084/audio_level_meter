@@ -3,20 +3,20 @@
 
 module position_to_array_tb();
 
-	parameter STEP = 100;	// 10MHz
+    parameter STEP = 100;	// 10MHz
 
-	initial begin
-		$dumpfile("position_to_array_tb.vcd");
-		$dumpvars;
-	end
-		
-	reg clk;
-	initial begin
-		clk = 1'b0;
-		forever begin
-			#(STEP / 2) clk = ~clk;
-		end
-	end
+    initial begin
+        $dumpfile("position_to_array_tb.vcd");
+        $dumpvars;
+    end
+
+    reg clk;
+    initial begin
+        clk = 1'b0;
+        forever begin
+            #(STEP / 2) clk = ~clk;
+        end
+    end
 
     reg i_valid = 1'b0;
     wire i_ready;
@@ -28,7 +28,7 @@ module position_to_array_tb();
     reg [4:0] position;
 
     wire [31:0] o_array;
-   
+
     position_to_array #(.peak_hold_count(peak_hold_count)) inst(
         .reset(reset),
         .clk(clk),
@@ -44,21 +44,21 @@ module position_to_array_tb();
         begin
             i_valid <= 1'b1;
             position <= pos;
-			wait (i_ready) @(posedge clk);
+            wait (i_ready) @(posedge clk);
             i_valid <= 1'b0;
             wait (o_valid) @(posedge clk);
         end
     endtask
 
 
-	reg reset;
-	initial begin
-		reset = 1'b0;
+    reg reset;
+    initial begin
+        reset = 1'b0;
         o_ready = 1'b1;
         i_valid = 1'b0;
 
-		repeat (2) @(posedge clk) reset = 1'b1;
-		repeat (2) @(posedge clk) reset = 1'b0;
+        repeat (2) @(posedge clk) reset = 1'b1;
+        repeat (2) @(posedge clk) reset = 1'b0;
 
         set_position(31);
         set_position(10);
@@ -68,10 +68,10 @@ module position_to_array_tb();
         set_position(2);
         set_position(1);
  
-		repeat (8) @(posedge clk) reset = 1'b0;
+        repeat (8) @(posedge clk) reset = 1'b0;
 
         $finish;
-	end
+    end
 
 
 endmodule

@@ -6,92 +6,82 @@ module audio_level_meter_tb();
     parameter CLK_OSC_STEP = 1000000000 / (20 * 1000 * 1000); // 20MHz
     parameter CLK_SDI_STEP = 1000000000 / (44100 * 128); // 44.1KHz * 128
 
-    reg reset;
-
     reg clk_osc;
     initial begin
-        clk_osc = 1'b0;
-        forever #(CLK_OSC_STEP / 2) clk_osc = ~clk_osc;
+        clk_osc <= 1'b0;
+        forever #(CLK_OSC_STEP / 2) clk_osc <= ~clk_osc;
     end
 
     reg clk_sdi;
     initial begin
-        clk_sdi = 1'b0;
-        forever #(CLK_SDI_STEP / 2) clk_sdi = ~clk_sdi;
+        clk_sdi <= 1'b0;
+        forever #(CLK_SDI_STEP / 2) clk_sdi <= ~clk_sdi;
     end
 
-    reg lrclk = 0;
-    reg sclk = 0;
-    reg sdin = 0;
-    wire spdif;
+    reg reset;
+    reg i_valid;
+    wire i_ready;
+    reg i_is_left;
+    reg [15:0] i_audio;
     audio_level_meter audio_level_meter_(
         .reset(reset),
+        .i_clk(clk_sdi),
         .clk(clk_osc),
-        .lrclk(lrclk),
-        .sclk(sclk),
-        .sdin(sdin),
-		.is_data_delay(1'b0),
-		.lrclk_polarity(1'b0),
+        .i_valid(i_valid),
+        .i_ready(i_ready),
+        .i_is_left(i_is_left),
+        .i_audio(i_audio),
         .stp16_noe(),
         .stp16_le(),
         .stp16_clk(),
         .stp16_sdi()
     );
-    
-    integer i;
-    integer k;
-    task outChannel(
-    input reg [31:0] value,
-    input reg [5:0] bit_count,
-    input reg [7:0] wait_count);
+
+    task out_audio(input is_left, input [15:0] audio);
         begin
-            for (i = 0; i < bit_count; i++) begin
-                sclk = 0;
-                sdin = value[bit_count - 1];
-                value = value << 1;
-                repeat(wait_count) @(posedge clk_sdi);
-                sclk = 1;
-                repeat(wait_count) @(posedge clk_sdi);
-            end
-            lrclk = ~lrclk;
+            i_valid <= 1'b1;
+            i_is_left <= is_left;
+            i_audio <= audio;
+            wait (i_ready) @(posedge clk_sdi);
+            i_valid <= 1'b0;
+            repeat (16) @(posedge clk_sdi);
         end
     endtask
-    
 
     initial begin
 
         $dumpfile("audio_level_meter_tb.vcd");
         $dumpvars(0, audio_level_meter_);
 
-        reset = 0;
-        lrclk = 0;
-        repeat(2) @(posedge clk_sdi) reset = 1;
-        reset = 0;
-        repeat(2) @(posedge clk_sdi);
-        
-        outChannel(16'h0000, 16, 2);		// Left
-        outChannel(16'h1fed, 16 ,2);		// Right
-        outChannel(16'h2eef, 16 ,2);		// Left
-        outChannel(16'h3333, 16 ,2);		// Right
-        outChannel(16'h5555, 16, 2);		// Left
-        outChannel(16'h1111, 16 ,2);		// Right
-        outChannel(16'h3333, 16 ,2);		// Left
-        outChannel(16'h8888, 16 ,2);		// Right
-        outChannel(16'h3333, 16 ,2);		// Left
-        outChannel(16'h0000, 16 ,2);		// Right
-        outChannel(16'h3333, 16 ,2);		// Left
-        outChannel(16'h0000, 16 ,2);		// Right
-        outChannel(16'h0000, 16 ,2);		// Left
-        outChannel(16'h0000, 16 ,2);		// Right
-        outChannel(16'h0000, 16 ,2);		// Left
-        outChannel(16'h0000, 16 ,2);		// Right
+        reset <= 0;
+        i_valid <= 1'b0;
+        i_is_left <= 1'b0;
+        i_audio <= 0;
 
-        for (i = 0; i < 64; i++) begin
-            sclk = 0;
-            repeat(1) @(posedge clk_sdi);
-            sclk = 1;
-            repeat(1) @(posedge clk_sdi);
+        repeat(2) @(posedge clk_sdi) reset <= 1;
+        repeat(2) @(posedge clk_sdi) reset <= 0;
+
+        repeat(128) begin
+            out_audio(1'b1, 16'h0123);
+            out_audio(1'b0, 16'h4567);
+            out_audio(1'b1, 16'h89ab);
+            out_audio(1'b0, 16'hcdef);
+            out_audio(1'b1, 16'h0123);
+            out_audio(1'b0, 16'h4567);
+            out_audio(1'b1, 16'h89ab);
+            out_audio(1'b0, 16'hcdef);
+            out_audio(1'b1, 16'h0123);
+            out_audio(1'b0, 16'h4567);
+            out_audio(1'b1, 16'h89ab);
+            out_audio(1'b0, 16'hcdef);
+            out_audio(1'b1, 16'h0123);
+            out_audio(1'b0, 16'h4567);
+            out_audio(1'b1, 16'h89ab);
+            out_audio(1'b0, 16'hcdef);
         end
+
+        repeat(100) @(posedge clk_sdi) reset <= 0;
+
 
         $finish();
     end

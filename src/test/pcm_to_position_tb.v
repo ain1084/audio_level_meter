@@ -2,33 +2,33 @@
 
 module pcm_to_position_tb();
 
-	parameter STEP = 100;	// 10MHz
-	parameter TICKS = 300;
+    parameter STEP = 100;	// 10MHz
+    parameter TICKS = 300;
 
-	initial begin
-		$dumpfile("pcm_to_position_tb.vcd");
-		$dumpvars;
-	end
-		
-	reg Clock;
-	initial begin
-		Clock = 1'b0;
-		forever begin
-			#(STEP / 2) Clock = ~Clock;
-		end
-	end
+    initial begin
+        $dumpfile("pcm_to_position_tb.vcd");
+        $dumpvars;
+    end
 
-	reg Reset;
-	initial begin
-		Reset = 1'b0;
-		repeat (2) @(posedge Clock) Reset = 1'b1;
-		@(posedge Clock) Reset <= 1'b0;
-	end
-	
-	initial begin
-		repeat (TICKS) @(posedge Clock);
-		$finish;
-	end
+    reg Clock;
+    initial begin
+        Clock = 1'b0;
+        forever begin
+            #(STEP / 2) Clock = ~Clock;
+        end
+    end
+
+    reg Reset;
+    initial begin
+        Reset = 1'b0;
+        repeat (2) @(posedge Clock) Reset = 1'b1;
+        @(posedge Clock) Reset <= 1'b0;
+    end
+    
+    initial begin
+        repeat (TICKS) @(posedge Clock);
+        $finish;
+    end
 
     reg [14:0] pcm;
     reg o_pcm_valid;
@@ -38,7 +38,7 @@ module pcm_to_position_tb();
     reg i_pcm_to_level_ready;
     wire [4:0] position;
 
-	pcm_to_position inst(
+    pcm_to_position inst(
         .clk(Clock),
         .reset(Reset),
         .i_valid(o_pcm_valid),
