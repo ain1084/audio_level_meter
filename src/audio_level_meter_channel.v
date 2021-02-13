@@ -14,7 +14,7 @@ module audio_level_meter_channel #(parameter indicator_width = 32, sample_rate =
     wire min_max_value_ready;
     wire [15:0] min_value;
     wire [15:0] max_value;
-    section_min_max #(.sample_count(section_sample_count)) msection_min_max_(
+    section_min_max #(.sample_count(section_sample_count)) section_min_max_(
         .reset(reset),
         .clk(clk),
         .i_valid(i_valid),

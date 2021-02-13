@@ -109,7 +109,7 @@ module audio_level_meter #(parameter
         .clk(clk),
         .i_valid(array_join_valid),
         .i_ready(array_join_ready),
-        .data({ led_right, led_left }),
+        .i_data({ led_right, led_left }),
         .stp16_le(stp16_le),
         .stp16_noe(stp16_noe),
         .stp16_clk(stp16_clk),

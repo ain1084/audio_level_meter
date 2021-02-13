@@ -26,3 +26,4 @@ FREQUENCY NET "spdif_transmitter_/clk128" 100.000000 MHz ;
 FREQUENCY NET "sclk_c" 100.000000 MHz ;
 USE SECONDARY NET "clk256_c" ;
 USE PRIMARY NET "sclk_c" ;
+LOCATE COMP "nreset" SITE "21" ;

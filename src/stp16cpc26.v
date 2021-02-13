@@ -5,7 +5,7 @@ module stp16cpc26 #(parameter width = 32, dynamic_drive_interval = 1)
      input wire clk,
      input wire i_valid,
      output wire i_ready,
-     input wire [width-1:0] data,
+     input wire [width-1:0] i_data,
      output reg stp16_le,
      output reg stp16_noe,
      output reg stp16_clk,
@@ -13,10 +13,10 @@ module stp16cpc26 #(parameter width = 32, dynamic_drive_interval = 1)
 
     reg [1:0] state;
     reg [$clog2(width)-1:0] count;
+    wire [$clog2(width)-1:0] count_last = width - 1;
     reg [width-1:0] current_data;
     reg [width-1:0] loaded_data;
     reg [dynamic_drive_interval-1:0] dynamic_drive_count;
-    reg is_initialized;
     reg is_loaded;
 
     assign i_ready = !is_loaded;
@@ -32,20 +32,18 @@ module stp16cpc26 #(parameter width = 32, dynamic_drive_interval = 1)
             current_data <= 0;
             dynamic_drive_count <= 2'b00;
             is_loaded <= 1'b0;
-            is_initialized <= 1'b0;
             loaded_data <= 0;
         end else begin
             if (i_valid && i_ready) begin
                 is_loaded <= 1'b1;
-                is_initialized <= 1'b1;
-                loaded_data <= data;
+                loaded_data <= i_data;
             end
             stp16_sdi <= current_data[width-1] & &dynamic_drive_count;
             case (state)
                 2'b00: begin
                     stp16_clk <= 1'b0;
                     stp16_le <= 1'b0;
-                    if (is_loaded || is_initialized) begin
+                    if (is_loaded) begin
                         current_data <= loaded_data;
                         is_loaded <= 1'b0;
                         state <= 2'b01;
@@ -54,23 +52,23 @@ module stp16cpc26 #(parameter width = 32, dynamic_drive_interval = 1)
                     end
                 end
                 2'b01: begin
-                    stp16_clk <= 1'b0;
-                    stp16_le <= 1'b0;
-                    state <= 2'b10;
-                end
-                2'b10: begin
                     stp16_clk <= 1'b1;
                     current_data <= current_data[width-2:0] << 1'b1;
                     count <= count + 1'b1;
-                    if (&count) begin
+                    if (count == count_last) begin
                         stp16_le <= 1'b1;
                         stp16_noe <= 1'b0;
                         state <= 2'b00;
                     end else begin
                         dynamic_drive_count <= dynamic_drive_count + 1'b1;
                         stp16_le <= 1'b0;
-                        state <= 2'b01;
+                        state <= 2'b10;
                     end
+                end
+                2'b10: begin
+                    stp16_clk <= 1'b0;
+                    stp16_le <= 1'b0;
+                    state <= 2'b01;
                 end
             endcase
         end
