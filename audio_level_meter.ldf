@@ -2,23 +2,20 @@
 <BaliProject version="3.2" title="audio_level_meter" device="LCMXO2-1200HC-5SG32C" default_implementation="impl1">
     <Options/>
     <Implementation title="impl1" dir="impl1" description="impl1" synthesis="lse" default_strategy="Strategy1">
-        <Options def_top="dataflow_select" top="audio_level_meter_top"/>
-        <Source name="src/audio_level_,meter_top.v" type="Verilog" type_short="Verilog">
-            <Options top_module="audio_level_meter_top"/>
-        </Source>
-        <Source name="src/stp16cpc26.v" type="Verilog" type_short="Verilog">
-            <Options/>
-        </Source>
-        <Source name="src/audio_level_meter.v" type="Verilog" type_short="Verilog">
+        <Options top="audio_level_meter_top"/>
+        <Source name="src/audio_level_meter_top.v" type="Verilog" type_short="Verilog">
             <Options/>
         </Source>
         <Source name="src/serial_audio_decoder/serial_audio_decoder.v" type="Verilog" type_short="Verilog">
             <Options/>
         </Source>
+        <Source name="src/dataflow_fork.v" type="Verilog" type_short="Verilog">
+            <Options/>
+        </Source>
         <Source name="src/dual_clock_buffer/dual_clock_buffer.v" type="Verilog" type_short="Verilog">
             <Options/>
         </Source>
-        <Source name="src/spdif_frame_encoder/spdif_bmc_encoder.v" type="Verilog" type_short="Verilog">
+        <Source name="src/spdif_transmitter.v" type="Verilog" type_short="Verilog">
             <Options/>
         </Source>
         <Source name="src/spdif_frame_encoder/spdif_frame_encoder.v" type="Verilog" type_short="Verilog">
@@ -27,10 +24,13 @@
         <Source name="src/spdif_frame_encoder/spdif_sub_frame_encoder.v" type="Verilog" type_short="Verilog">
             <Options/>
         </Source>
-        <Source name="src/spdif_transmitter.v" type="Verilog" type_short="Verilog">
+        <Source name="src/spdif_frame_encoder/spdif_bmc_encoder.v" type="Verilog" type_short="Verilog">
             <Options/>
         </Source>
-        <Source name="src/dataflow_fork.v" type="Verilog" type_short="Verilog">
+        <Source name="src/audio_level_meter.v" type="Verilog" type_short="Verilog">
+            <Options/>
+        </Source>
+        <Source name="src/audio_level_meter_channel.v" type="Verilog" type_short="Verilog">
             <Options/>
         </Source>
         <Source name="src/dataflow_branch.v" type="Verilog" type_short="Verilog">
@@ -39,28 +39,25 @@
         <Source name="src/dataflow_select.v" type="Verilog" type_short="Verilog">
             <Options/>
         </Source>
-        <Source name="src/position_to_array.v" type="Verilog" type_short="Verilog">
+        <Source name="src/section_min_max.v" type="Verilog" type_short="Verilog">
+            <Options/>
+        </Source>
+        <Source name="src/section_min_max_buffer.v" type="Verilog" type_short="Verilog">
             <Options/>
         </Source>
         <Source name="src/pcm_to_position.v" type="Verilog" type_short="Verilog">
             <Options/>
         </Source>
-        <Source name="src/dataflow_join.v" type="Verilog" type_short="Verilog">
-            <Options/>
-        </Source>
-        <Source name="src/audio_channel.v" type="Verilog" type_short="Verilog">
-            <Options/>
-        </Source>
-        <Source name="src/section_diff_buffer.v" type="Verilog" type_short="Verilog">
-            <Options/>
-        </Source>
-        <Source name="src/section_min_max.v" type="Verilog" type_short="Verilog">
+        <Source name="src/position_to_array.v" type="Verilog" type_short="Verilog">
             <Options/>
         </Source>
         <Source name="src/single_port_ram.v" type="Verilog" type_short="Verilog">
             <Options/>
         </Source>
-        <Source name="audio_channel_tf.v" type="Verilog" type_short="Verilog" syn_sim="SimOnly">
+        <Source name="src/dataflow_join.v" type="Verilog" type_short="Verilog">
+            <Options/>
+        </Source>
+        <Source name="src/stp16cpc26.v" type="Verilog" type_short="Verilog">
             <Options/>
         </Source>
         <Source name="audio_level_meter.lpf" type="Logic Preference" type_short="LPF">
