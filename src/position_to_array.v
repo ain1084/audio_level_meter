@@ -10,14 +10,18 @@ module position_to_array #(parameter width = 32, peak_hold_count = 1000)(
     input wire o_ready,
     output wire [width-1:0] o_array);
 
-    reg [$clog2(width)-1:0] peak_hold;
-    reg [$clog2(width)-1:0] max_position;
+    localparam width_bits = $clog2(width);
+
+    reg [width_bits-1:0] peak_hold;
+    reg [width_bits-1:0] max_position;
     reg [$clog2(peak_hold_count+1)-1:0] peak_hold_sample_count;
 
-    reg [$clog2(width)-1:0] cur_position;
-    reg [$clog2(width)-1:0] cur_peak_hold;
+    reg [width_bits-1:0] cur_position;
+    reg [width_bits-1:0] cur_peak_hold;
 
-    reg [$clog2(width)-1:0] count;
+    reg [width_bits-1:0] count;
+    wire [width_bits-1:0] count_last = width - 1;
+
     reg [width-1:0] array;
     assign o_array = array;
 
@@ -44,16 +48,18 @@ module position_to_array #(parameter width = 32, peak_hold_count = 1000)(
                 max_position <= max_position < i_position ? i_position : max_position;
             end
             cur_position <= i_position;
+            count <= 0;
             i_ready <= 1'b0;
         end else if (o_valid) begin
             if (o_ready) begin
                 o_valid <= 1'b0;
                 i_ready <= 1'b1;
             end
+            count <= 0;
         end else if (!i_ready) begin
             count <= count + 1'b1;
             array <= { count == cur_peak_hold || count <= cur_position, array[width-1:1] };
-            if (&count) begin
+            if (count == count_last) begin
                 o_valid <= 1'b1;
             end
         end
