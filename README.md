@@ -10,7 +10,7 @@ This is an audio level meter implemented using Verilog HDL.
 
 ## LED PCB
 
-![LEDArrayPCB](https://user-images.githubusercontent.com/14823909/108690717-02c7c200-753e-11eb-81db-30dd476a270b.png)
+![LEDArrayPCB](https://user-images.githubusercontent.com/14823909/108691048-6520c280-753e-11eb-8a10-e0a69f3bdde6.png)
 
 ## MachXO2 diagram
 
