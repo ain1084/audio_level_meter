@@ -24,6 +24,6 @@ This is an audio level meter implemented using Verilog HDL.
 
 ![audio_level_meter](https://user-images.githubusercontent.com/14823909/108680095-cb064d80-7530-11eb-8f45-fd2981305f66.png)
 
-## audio_level_Meter_channel module layer
+## audio_level_meter_channel module layer
 
 ![audio_level_meter_channel](https://user-images.githubusercontent.com/14823909/108680107-cd68a780-7530-11eb-88b2-989cc376a789.png)
