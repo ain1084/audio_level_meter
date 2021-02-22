@@ -1,6 +1,6 @@
 # audio_level_meter
 
-This is an audio level meter implemented in Verilog HDL.
+This is an audio level meter implemented using Verilog HDL. 
 
 [![](http://img.youtube.com/vi/rx9MjXJBh0M/0.jpg)](http://www.youtube.com/watch?v=rx9MjXJBh0M "Audio level meter demo")
 
